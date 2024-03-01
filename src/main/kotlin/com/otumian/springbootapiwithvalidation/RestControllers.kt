@@ -1,48 +1,33 @@
 package com.otumian.springbootapiwithvalidation
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
 
 
+data class ApiError(val message: String, val status: HttpStatus=HttpStatus.BAD_REQUEST)
+@RestControllerAdvice
 @RestController
 @RequestMapping("/api/v1/articles")
-class ArticleController {
-    val articles = mutableListOf(
-        Article(
-            "Hello world in Python",
-            "A simple introduction to python programming, write hello world console application"
-        )
-    )
+class ArticleController(val service: ArticleService) {
+
+    @ExceptionHandler(Exception::class)
+    fun handleExceptions(exception: Exception): ResponseEntity<ApiError> {
+        return ResponseEntity(exception.message?.let { ApiError(it) }, HttpStatus.BAD_REQUEST)
+    }
 
     @GetMapping
-    fun articles() = articles
+    fun articles() = service.getArticles()
 
-    @GetMapping("/{slug}")
-    fun article(@PathVariable slug: String) =
-        articles.find { article -> article.slug == slug } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    @GetMapping("/{id}")
+    fun article(@PathVariable id: Long) = service.getArticleById(id)
 
     @PostMapping
-    fun newArticle(@RequestBody article: Article): Article {
-        articles.add(article)
-        return article
-    }
+    fun newArticle(@RequestBody article: ArticleDto) = service.createArticle(article)
 
-    @PutMapping("/{slug}")
-    fun updateArticle(@RequestBody article: Article, @PathVariable slug: String): Article {
-        val existingArticle =
-            articles.find { row -> row.slug == slug } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    @PutMapping("/{id}")
+    fun updateArticle(@RequestBody article: ArticleDto, @PathVariable id: Long) = service.updateArticle(id, article)
 
-        val index = articles.indexOf(existingArticle)
-        existingArticle.content = article.content
-        existingArticle.title = article.title
-
-        articles[index] = existingArticle
-        return article
-    }
-
-    @DeleteMapping("/{slug}")
-    fun deleteArticle(@PathVariable slug: String) {
-        articles.removeIf { row -> row.slug == slug }
-    }
+    @DeleteMapping("/{id}")
+    fun deleteArticle(@PathVariable id: Long) = service.deleteArticleById(id)
 }

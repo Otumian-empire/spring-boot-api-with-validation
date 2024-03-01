@@ -2,7 +2,8 @@ package com.otumian.springbootapiwithvalidation
 
 import java.time.LocalDateTime
 
-data class Article(
+data class ArticleDto(
+    var id: Long?,
     var title: String,
     var content: String,
     val createdAt: LocalDateTime = LocalDateTime.now(),
