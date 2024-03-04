@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 
 @RestControllerAdvice
@@ -42,6 +43,13 @@ class ErrorHandling {
     @ExceptionHandler(DataIntegrityViolationException::class)
     fun handleDataIntegrityViolationException(exception: DataIntegrityViolationException): ResponseEntity<ApiError> {
         val message = "Some went wrong"
+        return ResponseEntity(ApiError(message), HttpStatus.BAD_REQUEST)
+    }
+
+    // handle sql error: DataIntegrityViolationException
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun handleMethodArgumentTypeMismatchException(exception: MethodArgumentTypeMismatchException): ResponseEntity<ApiError> {
+        val message = "Pass the appropriate value"
         return ResponseEntity(ApiError(message), HttpStatus.BAD_REQUEST)
     }
 }
