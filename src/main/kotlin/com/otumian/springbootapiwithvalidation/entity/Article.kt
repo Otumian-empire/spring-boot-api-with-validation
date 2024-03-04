@@ -1,5 +1,6 @@
-package com.otumian.springbootapiwithvalidation
+package com.otumian.springbootapiwithvalidation.entity
 
+import com.otumian.springbootapiwithvalidation.extension.toSlug
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
