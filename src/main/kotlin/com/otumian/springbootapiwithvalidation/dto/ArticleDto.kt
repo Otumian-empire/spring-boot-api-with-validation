@@ -1,5 +1,6 @@
-package com.otumian.springbootapiwithvalidation
+package com.otumian.springbootapiwithvalidation.dto
 
+import com.otumian.springbootapiwithvalidation.extension.toSlug
 import java.time.LocalDateTime
 
 data class ArticleDto(

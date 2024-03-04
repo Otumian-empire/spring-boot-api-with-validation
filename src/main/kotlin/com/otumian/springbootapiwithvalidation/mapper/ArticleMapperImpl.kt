@@ -1,15 +1,12 @@
-package com.otumian.springbootapiwithvalidation
+package com.otumian.springbootapiwithvalidation.mapper
 
+import com.otumian.springbootapiwithvalidation.dto.ArticleDto
+import com.otumian.springbootapiwithvalidation.entity.Article
 import org.springframework.stereotype.Service
 
 
-interface Mapper<Dto, Entity> {
-    fun fromEntityToDto(entity: Entity): Dto
-    fun fromDtoToEntity(dto: Dto): Entity
-}
-
 @Service
-class ArticleMapper : Mapper<ArticleDto, Article> {
+class ArticleMapperImpl : ArticleMapper<ArticleDto, Article> {
     override fun fromEntityToDto(entity: Article): ArticleDto {
         return ArticleDto(
             entity.id,
