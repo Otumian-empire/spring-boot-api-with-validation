@@ -1,4 +1,4 @@
-package com.otumian.springbootapiwithvalidation
+package com.otumian.springbootapiwithvalidation.extension
 
 import java.util.*
 
