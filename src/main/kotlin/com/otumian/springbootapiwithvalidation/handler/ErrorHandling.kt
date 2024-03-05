@@ -14,22 +14,30 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ErrorHandling {
     // handles any other error
     @ExceptionHandler(Exception::class)
-    fun handleExceptions(exception: Exception): ResponseEntity<String> {
+    fun handleExceptions(exception: Exception): ResponseEntity<ApiError> {
+        println("handleExceptions")
         println(exception)
-        return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(
+            ApiError(
+                message = exception.message ?: "exception: Something went wrong",
+                status = HttpStatus.INTERNAL_SERVER_ERROR
+            ), HttpStatus.INTERNAL_SERVER_ERROR
+        )
     }
 
     // handles errors thrown by the validation middleware
     @ExceptionHandler(BindException::class)
-    fun handleValidationExceptions(exception: BindException): ResponseEntity<ApiError> {
-        val message = exception.fieldError?.defaultMessage ?: "Something went wrong"
-        return ResponseEntity(ApiError(message), HttpStatus.BAD_REQUEST)
+    fun handleBeanValidationExceptions(exception: BindException): ResponseEntity<ApiError> {
+        val message = exception.fieldErrors.associate { it.field to it.defaultMessage }
+        val firstError = message.entries.firstOrNull()
+        return ResponseEntity(ApiError(firstError?.value?:"Something went wrong with the validation"), HttpStatus.BAD_REQUEST)
     }
 
     // handles validation error (custom)
     @ExceptionHandler(CustomException::class)
     fun handleValidationExceptions(exception: CustomException): ResponseEntity<ApiError> {
-        return ResponseEntity(ApiError(exception.message), HttpStatus.BAD_REQUEST)
+        val message = exception.message
+        return ResponseEntity(ApiError(message), HttpStatus.BAD_REQUEST)
     }
 
     // handles json parsing error
