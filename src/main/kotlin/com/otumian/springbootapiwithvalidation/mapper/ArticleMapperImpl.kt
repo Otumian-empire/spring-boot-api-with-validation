@@ -18,8 +18,8 @@ class ArticleMapperImpl : ArticleMapper<ArticleDto, Article> {
     override fun fromDtoToEntity(dto: ArticleDto): Article {
         return Article(
             dto.id,
-            dto.title,
-            dto.content
+            dto.title!!,
+            dto.content!!
         )
     }
 }
