@@ -14,14 +14,15 @@ import org.springframework.stereotype.Service
 class ArticleServiceImpl(
     private val repository: ArticleRepository,
     private val mapper: ArticleMapper<ArticleDto, Article>,
-    private val validation: IArticleValidator
+    private val validation: IArticleValidator // comment this out
 ): ArticleService {
     override fun createArticle(article: ArticleDto): ArticleDto {
         article.id = null
 
         // we are programmatically doing validation on the incoming article
         // this will throw a ValidationException
-        validation.article.validate(article)
+        // validation.article.validate(article)
+        // commented out because we are now using the bean validation
 
         val entity = mapper.fromDtoToEntity(article)
         repository.save(entity)
@@ -34,26 +35,26 @@ class ArticleServiceImpl(
     }
 
     override fun getArticleById(id: Long): ArticleDto {
-        validation.id.validate(id)
+//        validation.id.validate(id)
 
         val entity = repository.findByIdOrNull(id) ?: throw CustomException("Article with id, $id, not found")
         return mapper.fromEntityToDto(entity)
     }
 
     override fun updateArticle(id: Long, article: ArticleDto): ArticleDto {
-        validation.id.validate(id)
-        validation.article.validate(article)
+//        validation.id.validate(id)
+//        validation.article.validate(article)
 
         val entity = repository.findByIdOrNull(id) ?: throw CustomException("Article with id, $id, not found")
-        entity.title = article.title
-        entity.content = article.content
+        entity.title = article.title!!
+        entity.content = article.content!!
         repository.save(entity)
 
         return mapper.fromEntityToDto(entity)
     }
 
     override fun deleteArticleById(id: Long) {
-        validation.id.validate(id)
+//        validation.id.validate(id)
 
         val entity = repository.findByIdOrNull(id) ?: throw CustomException("Article with id, $id, not found")
         repository.delete(entity)
