@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service
 interface IStringValidationMechanism {
     fun isNotNull(value: Any?, message: String)
     fun isString(value: Any?, message: String)
-    fun isAtLeast(  value: Any?,  minimum: Int,  message: String)
-    fun isAtMost( value: Any?, maximum: Int, message: String   )
+    fun isAtLeast(value: Any?, minimum: Int, message: String)
+    fun isAtMost(value: Any?, maximum: Int, message: String)
 }
 
 
